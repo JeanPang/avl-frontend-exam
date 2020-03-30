@@ -26,3 +26,14 @@ https://avl-frontend-exam.now.sh/
 
 ###  Main Pane and Hashtags
 - [x] Pixel perfect desktop and mobile
+
+
+## Project setup
+```
+yarn install
+```
+
+### Compiles and hot-reloads for development
+```
+yarn start
+```

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './circle.css';
 
-const PercentageCircle = ({
+const CircleProgress = ({
 	percentage,
 	width,
 	strokeWidth,
@@ -30,7 +30,7 @@ const PercentageCircle = ({
 		>
 			{!hidePercentageText ?
 				<div id="reactGradientProgressPercentage">
-					<div
+					<span
 						className="reactGradientProgressPercentageSpan"
 						style={{
 							fontSize,
@@ -38,12 +38,8 @@ const PercentageCircle = ({
 							color: fontColor,
 						}}
 					>
-						<div className="reactGradientProgressPercentageTitle">ACCURACY</div>
-						<span>
-							<span className="reactGradientProgressPercentageNo">{percentage}</span>
-							<span className="reactGradientProgressPercentageMark">&nbsp;%</span>
-						</span>
-					</div>
+						{percentage}%
+					</span>
 				</div>
 				: null
 			}
@@ -82,6 +78,7 @@ const PercentageCircle = ({
 					cx={width / 2}
 					cy={width / 2}
 					stroke={`url(#${gradientId})`}
+					strokeLinecap='round'
 					strokeDasharray={`${circumference} ${circumference}`}
 					strokeDashoffset={offset}
 					strokeLinecap="butt"
@@ -91,7 +88,7 @@ const PercentageCircle = ({
 	);
 };
 
-PercentageCircle.propTypes = {
+CircleProgress.propTypes = {
 	percentage: PropTypes.number.isRequired,
 	width: PropTypes.number,
 	strokeWidth: PropTypes.number,
@@ -104,15 +101,15 @@ PercentageCircle.propTypes = {
 	hidePercentageText: PropTypes.bool
 };
 
-PercentageCircle.defaultProps = {
+CircleProgress.defaultProps = {
 	width: 200,
 	strokeWidth: 5,
 	fontSize: 'inherit',
 	fontColor: 'inherit',
 	fontFamily: 'inherit',
 	primaryColor: ['#00BBFF', '#92d7f1'],
-	secondaryColor: 'rgba(256,256,256,0.1)',
+	secondaryColor: 'transparent',
 	fill: 'transparent'
 };
 
-export default PercentageCircle;
+export default CircleProgress;

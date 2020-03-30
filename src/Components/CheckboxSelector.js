@@ -1,12 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './../icon.css';
 import styled from 'styled-components';
+import { Theme } from './../Theme';
 
 const Wrapper = styled.div`
-	min-width: 150px;
-	@media (max-width: 576px) {
-		width: 100%;
-	}
+
 `;
 
 const FadeOutOverlay = styled.div`
@@ -22,7 +20,7 @@ const FadeOutOverlay = styled.div`
 `;
 
 const ButtonBorder = styled.div`
-	background: linear-gradient(to left, #75b3b6, #3376ad);
+	background: ${props => props.theme.main};
 	padding: 1px;
 	margin: 5px;
 	border-radius: 100px;
@@ -40,16 +38,19 @@ const Button = styled.div`
 	border-radius: 100px;
 	padding: 10px 20px;
 	font-size: 15px;
-	background: #232529;
+	background: ${props => props.theme.background};
 	display: inline-block;
 `;
 
 const ButtonText = styled.div`
-	background: -webkit-linear-gradient(45deg, #0066a2, #6cd0f3, #00ff95);
+	font-size: 16px;
+	@media (max-width: 576px) {
+		font-size: 15px;
+	}
+	background: ${props => props.theme.second};
 	background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
-	font-size: 1rem;
 	font-weight: 600;
 	text-align: center;
 	&::after {
@@ -62,13 +63,13 @@ const ButtonText = styled.div`
     border-bottom: 0;
     border-left: 0.3em solid transparent;
 	}
-
 	display: inline-block;
 `;
 
 const IconCancel = styled.div`
 	display: none;
 	@media (max-width: 576px) {
+		font-size: 21px;
 		display: block;
 		position: absolute;
 		right: 30px;
@@ -114,7 +115,7 @@ const DropdownMenu = styled.div`
 	display: ${({ dropdownOpen }) => (dropdownOpen ? 'block' : 'none')};
 	position: absolute;
 	width: 350px;
-  background: #232529;
+	background: ${props => props.theme.background};
   color: rgba(256,256,256,0.7);
   box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.4);
 	margin-top: 20px;
@@ -144,8 +145,24 @@ const Checkbox = styled.div`
   background: ${({ isActive }) => (isActive ? 'linear-gradient(to left, #7cd4dd, #65bdda, #4498d4)' : 'none')};
 `;
 
+const CheckAmount = styled.span`
+	display: ${({ isActive }) => (isActive ? 'inline' : 'none')};
+	font-size: 15px;
+	letter-spacing: 1px;
+`;
+
 const CheckboxItem = styled.span`
-  display: ${({ isActive }) => (isActive ? 'inline' : 'none')};
+	display: ${({ isActive }) => (isActive ? 'inline' : 'none')};
+	font-size: 14px;
+`;
+
+const IconExpand = styled.span`
+	font-size: 21px;
+	padding-left: 1px;
+	background: ${props => props.theme.second};
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
 `;
 
 const CollapseItem = styled.div`
@@ -161,13 +178,14 @@ const Collapse = styled.div`
 	padding: 5px 50px 0px 50px;
 `;
 
-const DropdownAccordion = (props) => {
+const CheckboxSelector = (props) => {
 	const { dropdownOptions } = props;
 
 	let checkboxInitial = [];
 	let parentCheckboxInitial = [];
 	let dropdownInitial = [];
 	let buttonText;
+	let checkedValue = {};
 
 	const setInitialState = () => {
 		dropdownOptions.map((li, index) => {
@@ -195,11 +213,12 @@ const DropdownAccordion = (props) => {
 	};
 	setInitialState();
 
+	const wrapperRef = useRef(null);
 	const [activeIndex, setActiveIndex] = useState();
 	const [checkbox] = useState(checkboxInitial);
 	const [dropdown] = useState(dropdownInitial);
 	const [dropdownOpen, setDropdownOpen] = useState(false);
-	const wrapperRef = useRef(null);
+	const [checkAmount, setCheckAmount] = useState();
 
 	const handleToggle = () => {
 		setDropdownOpen(prevState => !prevState);
@@ -298,7 +317,7 @@ const DropdownAccordion = (props) => {
 		checkboxEl.parentElement.style.color = 'rgba(256,256,256,0.7)';
 	};
 
-	const handleCheckboxUI = () => {
+	const handleCheckboxUI = (clickedIndex) => {
 		checkbox.map((statusArr, statusArrI) => {			
 			statusArr.map((status, i) => {	
 				const checkboxEl = document.getElementById(`checkbox-${statusArrI}-${i}`);
@@ -313,105 +332,131 @@ const DropdownAccordion = (props) => {
 			});
 			return '';
 		});
+
+		const checkAmountArr = checkbox[clickedIndex].filter(item => item === true);
+		setCheckAmount(checkAmountArr.length)
 	};
 
 	const onCheck = (index, subIndex) => {
 		checkbox[index][subIndex] = !(checkbox[index][subIndex]);
 		setActiveIndex(index);
 		setChildAsyncOnCheck(index);
-		handleCheckboxUI();
+		handleCheckboxUI(index);
 	};
 
 	const onParentCheck = (e, clickedIndex) => {
 		setActiveIndex(clickedIndex);
 		setChildAsyncOnParentCheck(clickedIndex);
-		handleCheckboxUI();
+		handleCheckboxUI(clickedIndex);
 	};
 
-	const selectedValue = () => {
+	const getButtonText = () => {
 		if (activeIndex !== undefined){
 			buttonText = dropdownOptions[activeIndex].item
 		}
 	};
-	selectedValue();
+	getButtonText();
+
+	const getSelectedValue = () => {
+		if (activeIndex !== undefined) {
+			checkedValue.option = dropdownOptions[activeIndex].item;
+			checkedValue.subOption = [];
+			checkbox[activeIndex].map((status, i) => {
+				if (status === true) {
+					checkedValue.subOption.push(dropdownOptions[activeIndex].subItems[i]);
+				}
+				return '';
+			});
+		}
+	};
+	getSelectedValue();
+
+	console.log('CheckboxSelector Selected Value:', checkedValue);
 
 	return (
-		<Wrapper ref={wrapperRef}>
-			<FadeOutOverlay dropdownOpen={dropdownOpen} onClick={() => closeDropdown()}/>
-			<ButtonBorder
-				onClick={() => handleToggle()}>
-				<Button>
-					{
-						buttonText ? 
-						<ButtonText>
-							{buttonText}&nbsp;&nbsp;
-						</ButtonText>
-						: 
-						<ButtonText>
-							Topics&nbsp;&nbsp;
-						</ButtonText>
-					}
-				</Button>
-			</ButtonBorder>
-			<DropdownMenu
-				dropdownOpen={dropdownOpen}>
-				<IconCancel onClick={() => closeDropdown()}>
-					<span className='icon-show icon-cancel' />
-				</IconCancel>
-				<ItemTitle>
-					TOPICS
-				</ItemTitle>
-
-				{dropdownOptions.map((li, index) => (
-					<div key={index}>
-						<DropdownItem
-							id={li.togglerAccId}
-							key={index}
-							onClick={(e) => toggleDropdownItem(e, li.togglerAccId)}>
-							<Item isActive={activeIndex === index}>
-								<Checkbox
-									isActive={activeIndex === index} 
-									id={`checkbox-${index}`}
-									onClick={(e) => onParentCheck(e, index)}
-									className='checkbox'>
-									<CheckboxItem
-										className='icon icon-minus'
-										isActive={activeIndex === index} 
-									/>
-								</Checkbox>
-								{li.item}
-							</Item>
-
-							{(Object.prototype.hasOwnProperty.call(li, 'subItems'))
-							?
-								<span className='icon-show-bgcolor icon-down-open-1' />
+		<Theme>
+			<Wrapper ref={wrapperRef}>
+				<FadeOutOverlay dropdownOpen={dropdownOpen} onClick={() => closeDropdown()}/>
+				<ButtonBorder
+					onClick={() => handleToggle()}>
+					<Button>
+						{
+							buttonText ? 
+							<ButtonText>
+								{buttonText}&nbsp;&nbsp;
+							</ButtonText>
 							: 
-								<div />
-							}
-						</DropdownItem>
-
-						{(Object.prototype.hasOwnProperty.call(li, 'subItems'))?
-							<Collapse id={`collapse-${li.togglerAccId}`}>
-								{li.subItems.map((subItem, subIndex) => (
-									<CollapseItem key={subIndex}>
-										<Checkbox
-											id={`checkbox-${index}-${subIndex}`}
-											onClick={() => onCheck(index, subIndex)}>
-											<span className='icon icon-ok-3' />
-										</Checkbox>
-										{subItem}
-									</CollapseItem>
-								))}
-							</Collapse>						
-							: <div />
+							<ButtonText>
+								Topics&nbsp;&nbsp;
+							</ButtonText>
 						}
-			
-					</div>
-				))}
+					</Button>
+				</ButtonBorder>
+				<DropdownMenu
+					dropdownOpen={dropdownOpen}>
+					<IconCancel onClick={() => closeDropdown()}>
+						<span className='icon icon-cancel' />
+					</IconCancel>
+					<ItemTitle>
+						TOPICS
+					</ItemTitle>
 
-			</DropdownMenu>
-		</Wrapper>
+					{dropdownOptions.map((li, index) => (
+						<div key={index}>
+							<DropdownItem
+								id={li.togglerAccId}
+								key={index}
+								onClick={(e) => toggleDropdownItem(e, li.togglerAccId)}>
+								<Item isActive={activeIndex === index}>
+									<Checkbox
+										isActive={activeIndex === index} 
+										id={`checkbox-${index}`}
+										onClick={(e) => onParentCheck(e, index)}
+										className='checkbox'>
+										<CheckboxItem
+											className='icon icon-minus'
+											isActive={activeIndex === index} 
+										/>
+									</Checkbox>
+									<div>
+										{li.item}
+										&nbsp;&nbsp;
+										<CheckAmount isActive={activeIndex === index}>
+											{checkAmount !== 0 ? `(${checkAmount})`: ''}
+										</CheckAmount>
+									</div>
+								</Item>
+
+								{(Object.prototype.hasOwnProperty.call(li, 'subItems'))
+								?
+									<IconExpand className='icon icon-down-open-1' />
+								: 
+									<div />
+								}
+							</DropdownItem>
+
+							{(Object.prototype.hasOwnProperty.call(li, 'subItems'))?
+								<Collapse id={`collapse-${li.togglerAccId}`}>
+									{li.subItems.map((subItem, subIndex) => (
+										<CollapseItem key={subIndex}>
+											<Checkbox
+												id={`checkbox-${index}-${subIndex}`}
+												onClick={() => onCheck(index, subIndex)}>
+												<CheckboxItem className='icon icon-ok-3' />
+											</Checkbox>
+											{subItem}
+										</CollapseItem>
+									))}
+								</Collapse>						
+								: <div />
+							}
+				
+						</div>
+					))}
+				</DropdownMenu>
+			</Wrapper>
+		</Theme>
 	);
 };
 
-export default DropdownAccordion;
+export default CheckboxSelector;

@@ -6,28 +6,6 @@
 
 .icon { 
   font-family: 'fontello' !important; 
-  font-size: 14px;
-  display: none;
-}
-
-.icon-show-bgcolor { 
-  font-family: 'fontello' !important; 
-  font-size: 21px;
-  padding-left: 1px;
-  background: -webkit-linear-gradient(45deg, #0066a2, #6cd0f3, #00ff95);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.icon-show { 
-  font-family: 'fontello' !important; 
-  font-size: 21px;
-}
-
-.icon-show-sm { 
-  font-family: 'fontello' !important; 
-  font-size: 14px;
 }
 
 .icon-cancel:before { content: '\e800'; } /* '' */

@@ -1,12 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './../icon.css';
 import styled from 'styled-components';
+import { Theme } from './../Theme';
 
 const Wrapper = styled.div`
-	min-width: 150px;
-	@media (max-width: 576px) {
-		width: 100%;
-	}
+
 `;
 
 const FadeOutOverlay = styled.div`
@@ -22,7 +20,7 @@ const FadeOutOverlay = styled.div`
 `;
 
 const ButtonBorder = styled.div`
-	background: linear-gradient(to left, #75b3b6, #3376ad);
+	background: ${props => props.theme.main};
 	padding: 1px;
 	margin: 5px;
 	border-radius: 100px;
@@ -40,16 +38,19 @@ const Button = styled.div`
 	border-radius: 100px;
 	padding: 10px 20px;
 	font-size: 15px;
-	background: #232529;
+	background: ${props => props.theme.background};
 	display: inline-block;
 `;
 
 const ButtonText = styled.div`
-	background: -webkit-linear-gradient(45deg, #0066a2, #6cd0f3, #00ff95);
+	font-size: 16px;
+	@media (max-width: 576px) {
+		font-size: 15px;
+	}
+	background: ${props => props.theme.second};
 	background-clip: text;
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
-	font-size: 1rem;
 	font-weight: 600;
 	text-align: center;
 	&::after {
@@ -62,13 +63,13 @@ const ButtonText = styled.div`
     border-bottom: 0;
     border-left: 0.3em solid transparent;
 	}
-
 	display: inline-block;
 `;
 
 const IconCancel = styled.div`
 	display: none;
 	@media (max-width: 576px) {
+		font-size: 21px;
 		display: block;
 		position: absolute;
 		right: 30px;
@@ -88,13 +89,15 @@ const ItemTitle = styled.div`
 `;
 
 const DropdownItem = styled.div`
+	${props => props.isActive && ({
+    background: props.theme.main,
+  })}
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;
   font-weight: ${({ isActive }) => (isActive ? '500' : 'none')};
   color: ${({ isActive }) => (isActive ? '#fff' : 'none')};
-  background: ${({ isActive }) => (isActive ? 'linear-gradient(to left, #75b3b6, #3376ad)' : 'none')};
 	&:hover {
 		font-weight: 500;
 		color: #fff;
@@ -114,7 +117,7 @@ const DropdownMenu = styled.div`
 	display: ${({ dropdownOpen }) => (dropdownOpen ? 'block' : 'none')};
 	position: absolute;
 	width: 350px;
-  background: #232529;
+	background: ${props => props.theme.background};
   color: rgba(256,256,256,0.7);
   box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.4);
 	margin-top: 20px;
@@ -131,8 +134,8 @@ const DropdownMenu = styled.div`
 	}
 `;
 
-const DropdownAccordion = (props) => {
-  const { dropdownOptions} = props;
+const SimpleSelector = (props) => {
+	const { dropdownOptions} = props;
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState();
@@ -175,7 +178,7 @@ const DropdownAccordion = (props) => {
     setActiveIndex(id);
   };
 
-	const selectedValue = () => {
+	const getButtonText = () => {
     dropdownOptions.map((option, i) => {
       if (option.togglerId === activeIndex) {
         buttonText = option.item
@@ -183,55 +186,58 @@ const DropdownAccordion = (props) => {
       return '';
     });
 	};
-  selectedValue(); 
+  getButtonText(); 
+
+	console.log('SimpleSelector Selected Value:', buttonText);
 
 	return (
-		<Wrapper ref={wrapperRef}>
-			<FadeOutOverlay dropdownOpen={dropdownOpen} onClick={() => closeDropdown()}/>
-			<ButtonBorder
-				id='test'
-				onClick={() => handleToggle()}>
-				<Button>
-					{
-						buttonText ? 
-						<ButtonText>
-							{buttonText}&nbsp;&nbsp;
-						</ButtonText>
-						: 
-						<ButtonText>
-							Topics&nbsp;&nbsp;
-						</ButtonText>
-					}
-				</Button>
-			</ButtonBorder>
-			<DropdownMenu
-				dropdownOpen={dropdownOpen}>
-				<IconCancel onClick={() => closeDropdown()}>
-					<span className='icon-show icon-cancel' />
-				</IconCancel>
-				<ItemTitle>
-					TOPICS
-				</ItemTitle>
+		<Theme>
+			<Wrapper ref={wrapperRef}>
+				<FadeOutOverlay dropdownOpen={dropdownOpen} onClick={() => closeDropdown()}/>
+				<ButtonBorder
+					id='test'
+					onClick={() => handleToggle()}>
+					<Button>
+						{
+							buttonText ? 
+							<ButtonText>
+								{buttonText}&nbsp;&nbsp;
+							</ButtonText>
+							: 
+							<ButtonText>
+								Topics&nbsp;&nbsp;
+							</ButtonText>
+						}
+					</Button>
+				</ButtonBorder>
+				<DropdownMenu
+					dropdownOpen={dropdownOpen}>
+					<IconCancel onClick={() => closeDropdown()}>
+						<span className='icon icon-cancel' />
+					</IconCancel>
+					<ItemTitle>
+						TOPICS
+					</ItemTitle>
 
-				{dropdownOptions.map((li, index) => (
-					<div key={index}>
-            <DropdownItem
-							id={li.togglerId}
-							key={index}
-              onClick={(e) => toggleDropdownItem(e, li.togglerId)}
-              isActive={activeIndex === li.togglerId} 
-              >
-							<Item>
-								{li.item}
-							</Item>
-						</DropdownItem>			
-					</div>
-				))}
+					{dropdownOptions.map((li, index) => (
+						<div key={index}>
+							<DropdownItem
+								id={li.togglerId}
+								key={index}
+								onClick={(e) => toggleDropdownItem(e, li.togglerId)}
+								isActive={activeIndex === li.togglerId}
+								>
+								<Item>
+									{li.item}
+								</Item>
+							</DropdownItem>
+						</div>
+					))}
 
-			</DropdownMenu>
-		</Wrapper>
-		
+				</DropdownMenu>
+			</Wrapper>
+		</Theme>
 	);
 };
 
-export default DropdownAccordion;
+export default SimpleSelector;

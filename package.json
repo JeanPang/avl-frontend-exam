@@ -1,21 +1,32 @@
 {
-  "name": "my-app",
+  "name": "avl-frontend-exam",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src; exit 0"
   },
   "dependencies": {
+    "babel-loader": "^8.1.0",
     "bootstrap": "^4.4.1",
-    "react": "^16.13.1",
+    "now": "^17.1.1",
+    "react": "^16.10.2",
     "react-bootstrap": "^1.0.0",
-    "react-cosmos": "^5.1.0",
-    "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1",
+    "react-dom": "^16.10.2",
+    "react-scripts": "^3.4.1",
     "styled-components": "^5.0.1"
+  },
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.1.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-loader": "^3.0.3",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.19.0",
+    "react-cosmos": "^5.0.0-beta.15"
   },
   "browserslist": {
     "production": [

@@ -13,19 +13,25 @@ https://avl-frontend-exam.now.sh/
 - [x] “Press Enter” text and “Submit” button becomes enabled only when numbers are entered into numbers box.
 
 ### Radial Chart and Stats Pane
-- [x] Pixel perfect desktop and mobile
+- [x] Pixel perfect desktop and mobile.
 - [x] Not a static image, but real chart that could update if page is connected to server side.
-- [x] * When input number, percentage circle will show up  directly
+- [x] * When input number, percentage circle will show up  directly.
 
 ### Search Filters and Dropdown Menu
 - [x] Pixel perfect desktop and mobile
 - [x] Simple Selector
 - [x] Multiple Selector
-- [x] Checkboxes
+- [x] Checkbox Selector
 - [x] * Get selected value
 
 ###  Main Pane and Hashtags
 - [x] Pixel perfect desktop and mobile
+- [x] Tag level controlled by props
+
+###  Others
+- [x] React Hook
+- [x] Styled Components
+- [x] Theme color management
 
 
 ## Project setup

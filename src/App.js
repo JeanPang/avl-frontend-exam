@@ -3,21 +3,33 @@ import styled from 'styled-components';
 import PercentageCircle from './Components/PercentageCircle/index';
 import paneImage from './static/images/question-pic.png';
 import { useRef, useEffect } from 'react';
+import DropdownAccordion from './Components/DropdownAccordion';
+import Dropdown from './Components/Dropdown';
+import './icon.css';
 
 const Wrapper = styled.div`
-	display: flex;
+	font-family: Calibri;
 	width: 100%;
+	display: flex;
+	flex-direction: row;
+	@media (max-width: 576px) {
+		flex-direction: column;
+	}
 `;
 
 const SideBar = styled.div`
 	background: #1c1d1f;
-	@media (min-width: 576px) {
-		width: 270px;
-	}
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
 	align-items: left;
+	padding-top: 40px;
+	width: 340px;
+	@media (max-width: 576px) {
+		width: 100%;
+		flex-direction: row;
+		padding: 20px 0px;
+		justify-content: center;
+	}
 `;
 
 const PercentageCircleWrapper = styled.div`
@@ -27,9 +39,21 @@ const PercentageCircleWrapper = styled.div`
 	align-items: center;
 `;
 
-const SideBarItem = styled.div`
+const SideBarProblem = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	@media (max-width: 576px) {
+		margin-top: 20px;
+	}
+`;
+
+const SideBarItemWrapper = styled.div`
 	color: #fff;
 	margin: 40px 40px 0px 40px;
+	@media (max-width: 576px) {
+		margin: 10px 10px 20px 40px;
+	}
 `;
 
 const ItemTitle = styled.div`
@@ -41,6 +65,9 @@ const ItemNo = styled.span`
 	font-size: 40px;
 	font-weight: 700;
 	letter-spacing: 2px;
+	@media (max-width: 576px) {
+		font-size: 30px;
+	}
 `;
 
 const ItemText = styled.span`
@@ -51,22 +78,29 @@ const ItemText = styled.span`
 
 const SelectorBar = styled.div`
 	display: flex;
-	padding: 10px 90px;
-	margin: 10px 80px;
-`;
-
-const SimpleSelector = styled.div`
-	border: solid 1px #fff;
-	padding: 10px 20px;
-	margin: 5px;
-	border-radius: 100px;
-	font-size: 15px;
+	margin: 10px 82px;
+	padding: 10px 95px;	
+	@media (max-width: 1200px) {
+		margin: 10px 55px;
+		padding: 10px 55px;
+	}
+	@media (max-width: 576px) {
+		margin: 0px;
+		padding: 0px;
+	}
 `;
 
 const Page = styled.div`
 	background: #232529;
 	color: #fff;
-	width: calc(100% - 270px);
+	width: 100%;
+	padding-bottom: 400px;
+	@media (max-width: 1200px) {
+		padding-bottom: 200px;
+	}
+	@media (max-width: 576px) {
+		padding-bottom: 0px;
+	}
 `;
 
 const MainPane = styled.div`
@@ -74,44 +108,71 @@ const MainPane = styled.div`
 	box-shadow: 1px 1px 20px rgba(0, 0, 0, 0.4);
 	margin: 10px 82px;
 	padding: 10px 95px;	
+	@media (max-width: 1200px) {
+		margin: 10px 55px;
+		padding: 10px 55px;
+	}
+	@media (max-width: 576px) {
+		margin: 10px 10px;
+		padding: 10px 30px;
+	}	
 `;
 
 const PaneTitle = styled.div`
 	padding: 20px 0px;
 	border-bottom: solid 2px rgba(256,256,256,0.2);
-	color: #f5bc41;
+	color: #fff;
 	font-weight: 900;
 	letter-spacing: 1px;
 `;
 
+const TitleText = styled.span`
+	color: #f5bc41;
+`;
+
 const PaneText = styled.div`
 	padding: 20px 0px;
-	width: 510px;
+	max-width: 510px;
 	font-size: 15.5px;
 `;
 
 const PaneImage = styled.img`
 	border-radius: 20px;
 	object-fit: cover;
-	width: 490px;
+	width: 100%;
 `;
 
 const PaneContent = styled.div`
 	display: flex;
+	flex-direction: row;
+	@media (max-width: 1200px) {
+		flex-direction: column;
+	}
+	@media (max-width: 576px) {
+		align-items: center;
+	}
 `;
 
 const PaneContentLeft = styled.div`
-	width: 510px;
+	max-width: 510px;
 `;
 
 const PaneContentRight = styled.div`
 	padding: 10px;
 	margin-left: 15px;
+	@media (max-width: 1200px) {
+		margin-left: 0px;
+		padding: 6px;
+		max-width: 325px;
+	}
 `;
 
 const NumbersEntryBox = styled.form`
 	display: flex;
 	padding-top: 20px;
+	@media (max-width: 576px) {
+		padding-top: 0px;
+	}
 `;
 
 const InputBorder = styled.div`
@@ -177,14 +238,73 @@ const EnterIcon = styled.div`
 	padding-top: 2px;
 `;
 
-const SideBarProblem = props => {
+const IconCalculator = styled.span`
+	margin-right: 10px;
+`;
+
+const TagRow = styled.div`	
+	display: flex;
+	flex-direction: row;
+	margin: 20px 0px;
+	font-size: 14px;
+	font-weight: 600;
+`;
+
+const TagPriority = styled.div`
+	margin-left: 8px;
+	padding: 6px 12px;
+	border-radius: 5px;
+	background: linear-gradient(to left, rgba(124, 211, 221,${props => props.transparency}), rgba(101, 189, 218,${props => props.transparency}), rgba(68, 152, 212,${props => props.transparency}));
+	cursor: pointer;
+`;
+
+const ButtonSubmitRow = styled.div`
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 20px;
+	@media (max-width: 1200px) {
+		margin-top: 60px;
+	}
+	@media (max-width: 576px) {
+		align-items: center;
+		flex-direction: column;
+	}
+`;
+
+const ButtonBorder = styled.div`
+	background: linear-gradient(to left, #75b3b6, #3376ad);
+	padding: 2px;
+	border-radius: 50px;
+	display: inline-block;
+	margin-left: 20px;
+	&:hover {
+		cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
+	}
+	position: relative;
+	@media (max-width: 576px) {
+		margin-bottom: 20px;
+	}
+`;
+
+const ButtonText = styled.div`
+	padding: 8px;
+	width: 135px;
+	text-align: center;
+	border-radius: 50px;
+	font-weight: 500;
+	font-size: 16px;
+	display: inline-block;
+	background: ${({ bgFill }) => (bgFill ? 'none' : '#232529')};
+`;
+
+const SideBarItem = props => {
 	const {title, no} = props;
 	return (
-		<SideBarItem>
+		<SideBarItemWrapper>
 			<ItemTitle>{title}</ItemTitle>
 			<ItemNo>{no}</ItemNo>
 			<ItemText>&nbsp;PROBLEMS</ItemText>
-		</SideBarItem>
+		</SideBarItemWrapper>
 	);
 };
 
@@ -226,9 +346,12 @@ function Input(props) {
 		const inputValue3 = formElement.childNodes[2].childNodes[0].childNodes[0].value;
 		const inputValue4 = formElement.childNodes[3].childNodes[0].childNodes[0].value;
 		const pressEnterReminder = e.target.parentElement.parentElement.parentElement.parentElement.childNodes[1];
+		const submitBtn = document.getElementById('submitBtn').childNodes[0];
 
 		if (inputValue1 !== '' && inputValue2 !== '' && inputValue3 !== '' && inputValue4 !== '') {
 			pressEnterReminder.style.display = 'flex';
+			submitBtn.style.cursor = 'pointer';
+			submitBtn.classList.remove('disabled-btn');
 		}
 	};
 
@@ -274,38 +397,126 @@ function Input(props) {
 	);
 }
 
+const Tag = props => {
+	const {level, text} = props;
+  return (
+			<TagPriority transparency={level}>
+				{text}
+			</TagPriority>
+  )
+}
+
+const Button = props => {
+	const {text, bgFill, displayNone, id, disabled} = props;
+  return (
+		<ButtonBorder disabled={disabled} displayNone={displayNone} id={id}>
+			<ButtonText bgFill={bgFill} className={`${disabled ? 'disabled-btn' : ''}`}>{text}</ButtonText>
+		</ButtonBorder>
+  );
+};
+
 function App() {
 	const input1 = useRef(null);
 	const input2 = useRef(null);
 	const input3 = useRef(null);
 	const input4 = useRef(null);
 
+	const level = {
+		1: '1',
+		2: '0.5',
+		3: '0.2',
+	}
+
+	const accordionOptions = [
+		{
+			item: 'All Topics',
+		}
+		,
+		{
+			item: 'Algebra',
+			subItems: [
+				'Subtopic', 'Subtopic'
+			],
+		},
+		{
+			item: 'Geometry',
+			subItems: [
+				'Subtopic'
+			],
+		}
+		,
+		{
+			item: 'Trignometry',
+			subItems: [
+				'Subtopic', 'Subtopic', 'Subtopic'
+			],
+		},
+		{
+			item: 'Arithmetic',
+			subItems: [
+				'Subtopic', 'Subtopic'
+			],
+		},
+	];
+
+	const simpleOptions = [
+		{
+			item: 'All Topics',
+		}
+		,
+		{
+			item: 'Algebra',
+		},
+		{
+			item: 'Geometry',
+		}
+		,
+		{
+			item: 'Trignometry',
+		},
+		{
+			item: 'Arithmetic',
+		},
+	];
+
 	return (
 		<Wrapper>
 			<SideBar>
 				<PercentageCircleWrapper>
 					<PercentageCircle
-						percentage={75}
+						percentage={100}
 						strokeWidth={2.5}
 						primaryColor= {['#3887c7', '#76d0eb', '#8cdce7']}
 						fontColor='#fff'
 					/>
 				</PercentageCircleWrapper>
-				<SideBarProblem title="COMPLETED" no="100"/>
-				<SideBarProblem title="CORRECT" no="75"/>
+				<SideBarProblem>
+					<SideBarItem title="COMPLETED" no="100"/>
+					<SideBarItem title="CORRECT" no="75"/>
+				</SideBarProblem>
+				
 			</SideBar>
 			<Page>
 				<SelectorBar>
-					<SimpleSelector>Topics</SimpleSelector>
-					<SimpleSelector>Topics</SimpleSelector>
-					<SimpleSelector>Topics</SimpleSelector>
+					<DropdownAccordion dropdownOptions={accordionOptions}/>
+					<Dropdown dropdownOptions={simpleOptions}/>
 				</SelectorBar>
 				<MainPane>
-					<PaneTitle>Arithmetic</PaneTitle>
+					<PaneTitle>
+						<IconCalculator className='icon-show-sm icon-calc'/>
+						<TitleText>Arithmetic</TitleText>
+						&nbsp;∙&nbsp;
+						<TitleText>Real Problem</TitleText>
+					</PaneTitle>
 					<PaneText>The recommended daily calcium intake for a 20-year-old is 1,000 milligrams (mg). One cup of milk contains 299 mg of calcium and one cup of juice contains 261 mg of calcium. Which of the following inequalities represents the possible number of cups of milk m and cups of juice j a 20-year-old could drink in a day to meet or exceed the recommended daily calcium intake from these drinks alone?</PaneText>
 					<PaneContent>
 						<PaneContentLeft>
-							<PaneImage src={paneImage} />
+							<PaneImage src={paneImage}/>
+							<TagRow>
+								<Tag level={level[1]} text='Tag A'/>
+								<Tag level={level[2]} text='Tag B'/>
+								<Tag level={level[3]} text='Tag B'/>
+							</TagRow>
 						</PaneContentLeft>
 						<PaneContentRight>
 							<NumbersEntryBox>
@@ -345,6 +556,10 @@ function App() {
 							</PressEnter>
 						</PaneContentRight>
 					</PaneContent>
+					<ButtonSubmitRow>
+						<Button text='Skip'/>
+						<Button text='Submit' bgFill id={'submitBtn'} displayNone disabled/>
+					</ButtonSubmitRow>
 				</MainPane>
 			</Page>
 		</Wrapper>
@@ -353,6 +568,3 @@ function App() {
 }
 
 export default App;
-
-
-		

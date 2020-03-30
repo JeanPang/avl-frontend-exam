@@ -1,0 +1,48 @@
+.reactGradientProgress {
+  display: inline-block;
+  border-radius: 100%;
+  position: relative;
+}
+.reactGradientProgressPercentage {
+  position: absolute;
+  height:100%;
+  width: 100%;
+  margin: 0px auto;
+}
+
+.reactGradientProgressPercentageSpan{
+  position: absolute;
+  height:100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding-top: 10px;
+}
+
+.reactGradientProgressPercentageNo {
+  font-size: 40px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.reactGradientProgressPercentageMark {
+  font-size: 14px;
+  color: gray;
+}
+
+.reactGradientProgressPercentageTitle {
+  font-size: 14px;
+  color: lightgray;
+}
+
+.progressCircleBar {
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+.reactGradientProgressShadow {
+  -webkit-filter: drop-shadow( 1px 1px 8px rgba(140, 220, 231, 0.7));
+  filter: drop-shadow( 1px 1px 8px rgba(140, 220, 231, 0.7));
+}

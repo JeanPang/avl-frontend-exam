@@ -3,6 +3,8 @@
 ## Demo
 https://avl-frontend-exam.now.sh/
 
+## Requirements
+https://avancevl.github.io/recruit/sample_frontenddev.html
 
 ## Features List
 ### Numbers Entry Box
